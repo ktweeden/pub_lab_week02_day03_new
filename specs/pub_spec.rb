@@ -21,11 +21,13 @@ class TestPub < MiniTest::Test
   def sell_food()
     result = @pub.sell_food(@customer, "Porridge")
     assert_equal(true, result)
+    assert_equal(29, @pub.stock[:foods_stock_count])
   end
 
   def test_sell_drink()
     result = @pub.sell_drink(@customer, "Gin")
     assert_equal(true, result)
+    assert_equal(39, @pub.stock[:drinks_stock_count])
   end
 
   def test_sell_drink__not_enough_money()
@@ -70,7 +72,7 @@ class TestPub < MiniTest::Test
 
   def test_find_drink_by_name()
     result = @pub.find_drink_by_name("Gin")
-    assert_equal(@drink.name, result.name)
+    assert_equal("Gin", result[:name])
   end
 
   def test_find_drink_by_name__does_not_exist()
@@ -80,7 +82,7 @@ class TestPub < MiniTest::Test
 
   def test_find_food_by_name()
     result = @pub.find_food_by_name("Porridge")
-    assert_equal(@food.name, result.name)
+    assert_equal(@food.name, result[:name])
   end
 
   def test_find_food_by_name__does_not_exist()
@@ -88,4 +90,16 @@ class TestPub < MiniTest::Test
     assert_equal(nil, result)
   end
 
+  def test_stock_decrease_drink()
+    @pub.stock_decrease_drink("Vodka")
+    assert_equal(69, @pub.stock[:total_stock_count])
+    assert_equal(39, @pub.stock[:drinks_stock_count])
+    assert_equal(9, @pub.stock[:drinks][0][:quantity])
+  end
+  def test_stock_decrease_food()
+    @pub.stock_decrease_food("Porridge")
+    assert_equal(69, @pub.stock[:total_stock_count])
+    assert_equal(29, @pub.stock[:foods_stock_count])
+    assert_equal(9, @pub.stock[:foods][0][:quantity])
+  end
 end
